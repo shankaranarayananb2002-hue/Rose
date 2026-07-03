@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "Rose",
+    "slug": "rose",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#111b21"
+    },
+    "ios": {
+      "bundleIdentifier": "com.yourname.rose",
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "com.yourname.rose"
+    }
+  }
+}

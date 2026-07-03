@@ -1,0 +1,39 @@
+// Rose backend schema.
+// The server NEVER stores plaintext message content or private keys.
+// "content" below is always a ciphertext blob produced on-device.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  username      String    @unique
+  email         String    @unique
+  passwordHash  String
+  publicKey     String    // base64 X25519 public key, uploaded after on-device keypair generation
+  createdAt     DateTime  @default(now())
+
+  sentMessages     Message[] @relation("sender")
+  receivedMessages Message[] @relation("recipient")
+}
+
+model Message {
+  id            String    @id @default(uuid())
+  senderId      String
+  recipientId   String
+  ciphertext    String    // base64 encrypted payload — opaque to the server
+  nonce         String    // base64 nonce used for this message's encryption
+  createdAt     DateTime  @default(now())
+  delivered     Boolean   @default(false)
+
+  sender        User      @relation("sender", fields: [senderId], references: [id])
+  recipient     User      @relation("recipient", fields: [recipientId], references: [id])
+
+  @@index([recipientId, delivered])
+}
